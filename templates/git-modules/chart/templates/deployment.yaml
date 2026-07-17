@@ -34,7 +34,12 @@ spec:
             {{- toYaml .Values.resources | nindent 12 }}
       volumes:
         - name: sync-volume
+          {{- if .Values.persistence.enabled }}
+          persistentVolumeClaim:
+            claimName: {{ .Release.Name }}-git-modules-pvc
+          {{- else }}
           emptyDir: {}
+          {{- end }}
         - name: scripts-volume
           configMap:
             name: {{ .Release.Name }}-git-modules-scripts

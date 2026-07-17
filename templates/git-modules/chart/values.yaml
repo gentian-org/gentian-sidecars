@@ -24,3 +24,9 @@ resources:
   limits:
     cpu: 50m
     memory: 128Mi
+
+persistence:
+  enabled: false
+  size: 1Gi
+  storageClass: "nfs-csi"
+  accessMode: "ReadWriteMany"
