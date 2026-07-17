@@ -1,0 +1,6 @@
+apiVersion: v2
+name: CHANGEME-mcp
+description: TODO -- MCP server sidecar exposing <app>'s <capability> to AI agents
+type: application
+version: 0.1.0
+appVersion: "0.1.0"

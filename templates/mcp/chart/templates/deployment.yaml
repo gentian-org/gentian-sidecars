@@ -1,0 +1,59 @@
+# No Service template here on purpose -- AppProfile.spec.sidecars[].
+# stableServiceName/stableServicePort (gentian-os) renders a stable
+# Service alias selecting this Deployment's pods generically. See
+# README.md "Wiring into an AppProfile".
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "sidecar.fullname" . }}
+  labels:
+    {{- include "sidecar.labels" . | nindent 4 }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      {{- include "sidecar.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "sidecar.labels" . | nindent 8 }}
+    spec:
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          securityContext:
+            {{- toYaml .Values.containerSecurityContext | nindent 12 }}
+          ports:
+            - name: mcp
+              containerPort: {{ .Values.port }}
+          env:
+            - name: UPSTREAM_BASE_URL
+              value: {{ .Values.upstreamBaseUrl | quote }}
+            - name: MCP_PORT
+              value: {{ .Values.port | quote }}
+            # TODO: add whatever auth env vars server.py needs (an
+            # account username, a token key name, etc), reading them from
+            # a matching key under .Values -- e.g. add
+            # `upstreamServiceToken: ""` to values.yaml, then here:
+            #   - name: UPSTREAM_SERVICE_TOKEN
+            #     value: {{ `{{ .Values.upstreamServiceToken | quote }}` }}
+            # If the value comes from an appSecret, it arrives as a plain
+            # chart value via the AppProfile's spec.sidecars[].appSecrets
+            # -> Release set[] mechanism (Crossplane resolves the
+            # OpenBao-seeded Secret server-side before Helm ever sees it)
+            # -- see README.md "Authentication".
+          readinessProbe:
+            tcpSocket:
+              port: mcp
+            initialDelaySeconds: 2
+            periodSeconds: 10
+          livenessProbe:
+            tcpSocket:
+              port: mcp
+            initialDelaySeconds: 5
+            periodSeconds: 20
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
