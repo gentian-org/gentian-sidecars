@@ -1,5 +1,7 @@
 # gentian-sidecars
 
+See [AGENTS.md](AGENTS.md) for repo rules for coding agents.
+
 Templates for building **sidecars** — small companion services deployed
 alongside a Gentian OS app, using `AppProfile.spec.sidecars`. This repo
 holds *templates* (shape, boilerplate, hard-won gotchas) — not
@@ -58,7 +60,7 @@ Each sidecar gets:
 yet. If your sidecar needs its own database, that's real gentian-os work
 first, not something a template can paper over.
 
-See `gentian-apps/app-profile-guide.md` §13 ("Post-install bootstrap
+See `gentian-apps/docs/app-profile-guide.md` §13 ("Post-install bootstrap
 jobs") for the sibling `postInstallJob` mechanism, and the profile
 placement decision table there for when to reach for a sidecar vs. a
 `postInstallJob` vs. a full custom `composition.yaml`.
@@ -67,13 +69,17 @@ placement decision table there for when to reach for a sidecar vs. a
 
 ```
 templates/
-  mcp/       Model Context Protocol servers — expose an app's data/actions
-             to AI agents (Open WebUI's native tool support, etc.)
-  sso/       Auth/session bridges — not yet extracted into a template,
-             see templates/sso/README.md for the closest existing reference
-  webhook/   Event-driven push sidecars (e.g. backing AppProfile's
-             automationHooks) — not yet extracted, see
-             templates/webhook/README.md
+  mcp/         Model Context Protocol servers — expose an app's data/actions
+               to AI agents (Open WebUI's native tool support, etc.)
+  sso/         Auth/session bridges — not yet extracted into a template,
+               see templates/sso/README.md for the closest existing reference
+  sso-saml/    SAML 2.0 login bridge — early extraction, see
+               templates/sso-saml/README.md
+  git-modules/ Polling git-sync sidecar for module/plugin directories, see
+               templates/git-modules/README.md
+  webhook/     Event-driven push sidecars (e.g. backing AppProfile's
+               automationHooks) — not yet extracted, see
+               templates/webhook/README.md
 ```
 
 Pick the folder matching what your sidecar *does*, not what app it's
