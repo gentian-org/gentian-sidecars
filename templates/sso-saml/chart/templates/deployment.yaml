@@ -27,6 +27,12 @@ spec:
               value: {{ .Values.sso.issuer | quote }}
             - name: APP_HANDLER_SCRIPT
               value: "/usr/src/app/custom/handler.js"
+            {{- if .Values.extraEnvVars }}
+            {{- range .Values.extraEnvVars }}
+            - name: {{ .name }}
+              value: {{ .value | quote }}
+            {{- end }}
+            {{- end }}
           volumeMounts:
             - name: handler-script
               mountPath: /usr/src/app/custom
