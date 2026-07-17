@@ -36,7 +36,7 @@ spec:
         - name: sync-volume
           {{- if .Values.persistence.enabled }}
           persistentVolumeClaim:
-            claimName: {{ .Release.Name }}-git-modules-pvc
+            claimName: {{ .Release.Name }}-pvc
           {{- else }}
           emptyDir: {}
           {{- end }}
