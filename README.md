@@ -167,3 +167,8 @@ protocol, not by calling the sidecar's own functions directly or
 mocking the upstream API. Mocking the app you're wrapping risks baking
 your own misunderstanding of its API into both the mock and the
 implementation, so nothing ever catches the mismatch.
+
+## License
+
+Apache-2.0 — see [LICENSE](LICENSE). These are templates, made to be copied
+into other people's apps, open and closed alike.
