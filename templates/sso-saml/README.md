@@ -1,36 +1,27 @@
-# SSO SAML sidecar template
+# Sign-in sidecar — not a template
 
-A minimal SAML 2.0 login bridge — generates the `AuthnRequest` redirect, receives the
-Assertion Consumer Service (ACS) callback, and hands the parsed profile to a pluggable
-per-app handler script. Use this for apps that speak SAML but need a small bridge in front
-of them to talk to the kernel's identity provider.
+There is nothing to copy here, on purpose.
 
-## What's in this directory
+The sidecar that signs people in to an app which can do neither OIDC nor SAML is **one program,
+run by the platform**, not something each app builds for itself:
 
-```
-bridge.js           The bridge server (plain Node http, no framework); loads a pluggable
-                     handler.js at APP_HANDLER_SCRIPT and calls its onLogin(profile, req, res)
-Dockerfile           Bakes npm deps (pg, mysql2, jsonwebtoken) in at build time
-chart/               Minimal Helm chart: Deployment, Service, ConfigMap. The ConfigMap
-                     renders chart/values.yaml's `handlerScript` into handler.js at
-                     APP_HANDLER_SCRIPT — that's where the per-app login logic lives,
-                     not a file in this directory.
-```
+- **The sidecar** is in gentian-apps, `images/gentian-sidecar-sso-saml/`. That is its only copy.
+  Its README says what it accepts as the identity provider's answer, what a handler is given and
+  what a handler may answer.
+- **An app declares it** in its catalogue entry, `requires.services.identity.sidecar`, and brings
+  one file, the handler: the code that makes a session in that app for the person the sidecar
+  names. gentian-os, `docs/app-customization.md` ("The sign-in sidecar"), has the declaration and
+  what the platform does for it; `docs/design/security.md` has what guards it.
+- **Two worked handlers**: `profiles/docmost/docmost-ce/assets/sign-in-handler.js` and
+  `profiles/activepieces/activepieces-me/assets/sign-in-handler.js` in gentian-apps, each with an
+  end-to-end test against the real app.
 
-## Quick start
+## Why the copy that was here is gone
 
-1. Copy this directory to `gentian-apps/images/<app>-sso-saml/`.
-2. Set `sso.tenantId`, `sso.kernelDomain`, `sso.issuer` in `chart/values.yaml` for the target
-   app.
-3. Write the app-specific `handlerScript` in `chart/values.yaml` — this is what actually
-   provisions/logs in the user in the wrapped app once SAML validates.
-4. Test the SAML redirect + ACS callback against a real IdP-backed login before wiring CI or
-   an `AppProfile` (see root README "Verify against the real app, not a mock").
-5. Follow the root README's "Using a template" steps 3–4 (CI, profile wiring).
+This directory held an early extraction of the sidecar: `bridge.js`, a Dockerfile and a chart. It
+took whatever was posted to it at its word — it read an e-mail address out of the XML with a
+pattern and checked no signature — and it was kept in step with nothing. A second copy of the
+program that decides whether a sign-in is genuine is a copy that is wrong sooner or later, and a
+template invites a third.
 
-## Status
-
-This is an early extraction, not yet validated against a second app beyond the one it was
-built for — treat `bridge.js` as a starting point, not a finished bridge. Cross-check against
-the root README's "Reaching the app over its in-namespace Service name" note if the wrapped
-app validates the `Host` header.
+So: do not build a sign-in sidecar from a template. Write a handler for the platform's.

@@ -17,6 +17,13 @@ ConfigMap+Deployment+Service inside OpenProject's own
 custom `composition.yaml`, not the generic mechanism — read it for the
 *problem shape*, not as a pattern to copy mechanically.
 
+## Signing people in is not built from a template
+
+An app that can do neither OIDC nor SAML is signed in to through the platform's sign-in sidecar,
+which an app declares and brings a handler for. See
+[`../sso-saml/README.md`](../sso-saml/README.md). What is described below is about other kinds of
+auth bridge.
+
 ## When to build this template
 
 Once a second SSO/auth-bridge sidecar exists (built on
