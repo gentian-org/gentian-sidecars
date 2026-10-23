@@ -73,8 +73,8 @@ templates/
                to AI agents (Open WebUI's native tool support, etc.)
   sso/         Auth/session bridges — not yet extracted into a template,
                see templates/sso/README.md for the closest existing reference
-  sso-saml/    SAML 2.0 login bridge — early extraction, see
-               templates/sso-saml/README.md
+  sso-saml/    Not a template: the platform's sign-in sidecar is one program,
+               in gentian-apps. See templates/sso-saml/README.md
   git-modules/ Polling git-sync sidecar for module/plugin directories, see
                templates/git-modules/README.md
   webhook/     Event-driven push sidecars (e.g. backing AppProfile's
