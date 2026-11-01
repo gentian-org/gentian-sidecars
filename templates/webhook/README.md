@@ -9,9 +9,9 @@ category has been built on this platform yet.
 `AppProfile.spec.automationHooks` (see
 `gentian-os/docs/design/agentic-ai.md` §5, "Automation Hooks") is the
 intended consumer: apps declare events they can emit
-(`deliveryMode: webhook`) and actions workflow engines (ActivePieces,
-future n8n) can trigger. A sidecar in this category would most likely
-be the thing translating between an app's own event/webhook format and
+(`deliveryMode: webhook`) and actions workflow engines can trigger. A
+sidecar in this category would most likely be the thing translating
+between an app's own event/webhook format and
 whatever the platform's automation layer expects — but as of this
 writing `automationHooks` itself is a schema-only field, same starting
 state MCP was in before `nextcloud-mcp` was built (see the root repo's
