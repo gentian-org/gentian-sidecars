@@ -13,7 +13,7 @@ run by the platform**, not something each app builds for itself:
   names. gentian-os, `docs/app-customization.md` ("The sign-in sidecar"), has the declaration and
   what the platform does for it; `docs/design/security.md` has what guards it.
 - **Two worked handlers**: `profiles/docmost/docmost-ce/assets/sign-in-handler.js` and
-  `profiles/activepieces/activepieces-me/assets/sign-in-handler.js` in gentian-apps, each with an
+  `profiles/openproject/openproject-ce/assets/sign-in-handler.js` in gentian-apps, each with an
   end-to-end test against the real app.
 
 ## Why the copy that was here is gone
