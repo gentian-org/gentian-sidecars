@@ -114,14 +114,32 @@ the first real instance.
 
 ### Internet egress
 
-The tenant namespace's NetworkPolicy blocks general internet egress by
-default. A sidecar that tries to `pip install`/`apk add`/`npm install`
-at container **startup** will hang until it exhausts its retries —
-observed first-hand as a stuck Job, ~2 minutes per failed attempt, no
-useful error in the logs. **Bake every dependency into the image at
-build time.** Runtime network access is fine for calls to the app
-itself (same namespace) or anything explicitly allow-listed via
-`gentianos.io/kernel-egress-namespaces` — never for pulling packages.
+A tenant's pods reach the cluster's DNS, the API server and what the
+profile declares inside the cluster; every connection to a host outside
+is refused unless the profile requested it and it was granted. A sidecar that tries
+to `pip install`/`apk add`/`npm install` at container **startup** hangs
+until it exhausts its retries — ~2 minutes per failed attempt, no useful
+error in the logs. **Bake every dependency into the image at build
+time.**
+
+At run time a sidecar calls the app over its Service in the same
+namespace. The sidecar's pods carry the app's labels (the operator sets
+`gentianos.io/app` and `gentianos.io/tenant` in the release's
+`podLabels` value), and the app's NetworkPolicies apply to them: the
+in-app policy that lets the app's programs reach each other, and an
+egress `rule` granted to the app. The chart must put `podLabels` on its
+pod template; without them the app's in-app policy does not admit the
+sidecar. A host granted by name reaches the outgoing gateway through a
+host-table entry the operator writes into the app's own release only,
+not into a sidecar's (`internal/apprender/extensions.go` in gentian-os):
+a sidecar reaches no outside host by name. The
+`gentianos.io/kernel-egress-namespaces` annotation names cluster
+namespaces, at `trustTier: platform` only, and opens nothing outside.
+
+How egress is requested and granted:
+[gentian-os/docs/concepts/edge.md](https://github.com/gentian-org/gentian-os/blob/develop/docs/concepts/edge.md);
+how a profile declares it:
+[gentian-apps/docs/app-profile-guide.md](https://github.com/gentian-org/gentian-apps/blob/develop/docs/app-profile-guide.md).
 
 ### Authentication
 
